@@ -8,11 +8,17 @@ const CarList = () => {
   const dispatch = useDispatch();
   
   // A GOOD PLACE TO PUT DERIVED STATES (FILTERING LOGIC - SEARCH LOGIC) IS INSIDE OF "useSelector" FUNCTIONS!
-  const cars = useSelector(({ cars: { data, searchTerm } }) => {
+  const { cars, name } = useSelector(({ form, cars: { data, searchTerm } }) => {
     // filtering logic
-    return data.filter((car) => {
-      return car.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredCars = data.filter((car) => {
+      // return the list of cars to the user
+      return car.name.toLowerCase().includes(searchTerm.toLowerCase());
     });
+    // return what the current name is inside of the form (HIGHLIGHTED VALUE)
+    return {
+      cars: filteredCars,
+      name: form.name
+    }
   });
 
   const handleCarDelete = (car) => {
@@ -20,8 +26,11 @@ const CarList = () => {
   };
 
   const renderedCars = cars.map((car) => {
+    // LOGIC TO DECIDE IF THE CAR SHOULD BE HIGHLIGHTED
+    const bold = name && car.name.toLowerCase().includes(name.toLowerCase());
+
     return(
-      <div key={car.id} className='panel'>
+      <div key={car.id} className={`panel ${bold && 'bold'}`}>
         <p>
           {car.name} - ${car.cost}
         </p>
