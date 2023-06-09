@@ -6,9 +6,13 @@ import { removeCar } from '../store/slices/carsSlice';
 
 const CarList = () => {
   const dispatch = useDispatch();
-  const cars = useSelector((state) => {
-    // access the big State -> access to store (cars) store/index.jsx -> access data key inside carsSlice.js
-    return state.cars.data;
+  
+  // A GOOD PLACE TO PUT DERIVED STATES (FILTERING LOGIC - SEARCH LOGIC) IS INSIDE OF "useSelector" FUNCTIONS!
+  const cars = useSelector(({ cars: { data, searchTerm } }) => {
+    // filtering logic
+    return data.filter((car) => {
+      return car.name.toLowerCase().includes(searchTerm.toLowerCase())
+    });
   });
 
   const handleCarDelete = (car) => {
